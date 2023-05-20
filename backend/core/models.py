@@ -84,6 +84,7 @@ class User(AbstractUser):
 class Subscriber(BaseModel):
     # Subscriber details
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    profile = models.FileField(upload_to='subscriber_profile_photo/', null=True)
     aadhar_number = models.CharField(max_length=12, null=True)
     aadhar_photo = models.ImageField(upload_to='aadhar_photo/', null=True)
     pan_number = models.CharField(max_length=12, null=True)
