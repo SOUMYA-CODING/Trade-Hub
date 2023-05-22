@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Title -->
+    <title>Trade Hub | Login</title>
+
+    <!-- Fonts -->
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Core Styles -->
+    <link href="{% static 'css/core-style.min.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <main class="w-100 min-vh-100 d-flex align-items-center justify-items-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-5 login-form">
+                    <h2 class="text-center font-weight-bolder text-uppercase mb-3">Login</h2>
+                    <form method="post" autocomplete="off" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <div>
+                            <span>
+                                {% if messages %}
+                                {% for message in messages %}
+                                <p class="{{message.tags}}">{{message}}</p>
+                                {% endfor %}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username"
+                                placeholder="Enter your username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="password"
+                                    placeholder="Enter your password" name="password" required>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="d-flex align-items-center justify-content-center">
+                                <input type="checkbox">&nbsp; Remember Me
+                            </span>
+                            <a href="{% url 'PasswordReset' %}" class="">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var toastEl = document.getElementById('liveToastforSubscriber')
+            if (toastEl) {
+                var toast = new bootstrap.Toast(toastEl)
+                toast.show()
+            }
+        })
+    </script>
+
+    <!-- Bootstrap Core JavaScript-->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Core Plugin JavaScript-->
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{% static 'js/core-script.min.js' %}"></script>
+</body>
+
+</html>

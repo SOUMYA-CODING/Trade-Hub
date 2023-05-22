@@ -1,0 +1,290 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+<!-- Title -->
+{% block title %}
+Trade Hub | Sub Categories
+{% endblock title %}
+
+<!-- Active State -->
+{% block catgeory_active %}
+active
+{% endblock catgeory_active %}
+
+<!-- Content -->
+{% block content %}
+
+<!-- Messages -->
+<span>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="position-fixed top-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
+        <div id="LiveTostForSubCategory" class="toast" role="alert" aria-live="assertive" aria-atomic="true"
+            data-delay="2000">
+            <div
+                class="toast-header {% if message.tags == 'error' %}bg-danger text-white{% elif message.tags == 'success' %}bg-success text-white{% elif message.tags == 'warning' %}bg-warning text-dark{% endif %}">
+                <strong class="mr-auto" style="text-transform: uppercase;">{{ message.tags }}</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</span>
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-1">
+    <section>
+        <h4 class="mb-0"><strong>Sub Categories</strong></h4>
+        <p>Add, edit, or delete a category</p>
+    </section>
+    <button class="btn btn-primary px-4" type="button" data-toggle="modal" data-target="#addNewCategory">
+        <i class="fa-sharp fa-solid fa-plus"></i>
+        &nbsp;
+        Add Category
+    </button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addNewCategory" tabindex="-1" aria-labelledby="addNewCategoryLabel" aria-hidden="true"
+    role="document">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNewCategoryLabel">New Sub Category</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'add_sub_category' %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="parent-category-list">Parent Category</label>
+                        <select class="form-control" id="parent-category-list" name="parent_category_id" required>
+                            <option>Select Parent Catgeory</option>
+                            {% for menu_lists in parent_category_menu_list %}
+                            <option value="{{menu_lists.code}}">{{menu_lists.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sub-category" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="sub-category" placeholder="Enter category name"
+                            name="sub_category_name" required>
+                    </div>
+                    <div id="image-preview"></div>
+                    <div class="float-right">
+                        <button type="reset" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Content -->
+<div class="card shadow py-2">
+    <div class="card-body">
+        <div class="row">
+            <!-- Display Category -->
+            <div class="col-xl-12">
+                <div class="table-responsive">
+                    <div class="float-left">
+                        <form id="search-form" method="GET" action="">
+                            <div class="form-group">
+                                <input type="text" class="form-control border-1 small" id="search-input" name="search"
+                                    placeholder="Search" aria-label="Search" aria-describedby="basic-addon2"
+                                    value="{% if search_query %}{{ search_query }}{% else %}{% endif %}">
+                            </div>
+                        </form>
+                    </div>
+                    <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Code ID</th>
+                                <th>Category</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Created On</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if sub_category_details %}
+                            {% for categories in sub_category_details %}
+                            <tr>
+                                <td>{{categories.code}}</td>
+                                <td>{{categories.category}}</td>
+                                <td>{{categories.name}}</td>
+                                <td>
+                                    {% if categories.is_active %}
+                                    Active
+                                    {% else %}
+                                    In Active
+                                    {% endif %}
+                                </td>
+                                <td>{{categories.created_on}}</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                                            data-target="#editModalNo{{categories.id}}">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <a href="{% url 'delete_sub_category' categories.id %}"
+                                            class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+
+                                        <!-- Edit Category Model -->
+                                        <div class="modal fade" id="editModalNo{{categories.id}}" tabindex="-1"
+                                            aria-labelledby="editModalNo{{categories.id}}Label" aria-hidden="true"
+                                            role="document">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editModalNo{{categories.id}}Label">
+                                                            Edit Category</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{% url 'update_sub_category' categories.id %}"
+                                                            method="post" autocomplete="off" id="editCategoryForm">
+                                                            {% csrf_token %}
+                                                            <div class="mb-3">
+                                                                <label for="sub-category-name-id"
+                                                                    class="form-label float-left">ID</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="sub-category-name-id"
+                                                                    name="sub_category_id" value="{{categories.id}}"
+                                                                    readonly>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="sub-category-name"
+                                                                    class="form-label float-left">Name</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="sub-category-name"
+                                                                    placeholder="Enter category name"
+                                                                    name="edit_sub_category_name"
+                                                                    value="{{categories.name}}" required>
+                                                            </div>
+                                                            <div class="mb-3 float-left">
+                                                                <input type="checkbox" id="edit_sub_category_status"
+                                                                    name="edit_sub_category_status" {% if categories.is_active %} checked {% endif %}>
+                                                                <label for="edit_sub_category_status">
+                                                                    {% if categories.is_active %}
+                                                                    Active
+                                                                    {% else %}
+                                                                    Inactive
+                                                                    {% endif %}
+                                                                </label>
+                                                            </div>
+                                                            <div class="float-right">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Save
+                                                                    changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                            {% else %}
+                            <tr>
+                                <td colspan="6">No Record</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if sub_category_details.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if sub_category_details.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ sub_category_details.previous_page_number }}"
+                                aria-label="Previous">
+                                <span aria-hidden="true">Previous</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% for num in sub_category_details.paginator.page_range %}
+                        <li class="page-item {% if num == sub_category_details.number %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endfor %}
+                        {% if sub_category_details.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ sub_category_details.next_page_number }}"
+                                aria-label="Next">
+                                <span aria-hidden="true">Next</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Custom Scripts -->
+{% block custom_cripts %}
+<script>
+
+    // Function to perform search
+    function performSearch() {
+        var searchQuery = document.getElementById('search-input').value.toLowerCase();
+        var tableRows = document.querySelectorAll('#myTable tbody tr');
+
+        tableRows.forEach(function (row) {
+            var categoryName = row.querySelector('td:nth-child(3)').innerText.toLowerCase();
+            if (categoryName.includes(searchQuery)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Add event listener to the search input
+    document.getElementById('search-input').addEventListener('input', performSearch);
+
+    // Clear search input and show all rows when the form is submitted
+    document.getElementById('search-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        document.getElementById('search-input').value = '';
+        performSearch();
+    });
+
+    // For Toast message
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastEl = document.getElementById('LiveTostForSubCategory')
+        if (toastEl) {
+            var toast = new bootstrap.Toast(toastEl)
+            toast.show()
+        }
+    })
+
+</script>
+
+{% endblock custom_cripts %}

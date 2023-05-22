@@ -26,7 +26,7 @@ class ShopCategoryAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 class ParentCategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'is_active']
+    list_display = ['code', 'name', 'is_active']
     list_filter = ['is_active']
     search_fields = ['name']
 

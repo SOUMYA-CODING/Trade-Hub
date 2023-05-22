@@ -1,0 +1,343 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+<!-- Title -->
+{% block title %}
+Trade Hub | Parent Categories
+{% endblock title %}
+
+<!-- Active State -->
+{% block catgeory_active %}
+active
+{% endblock catgeory_active %}
+
+<!-- Content -->
+{% block content %}
+
+<!-- Messages -->
+<span>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="position-fixed top-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
+        <div id="LiveTostForParentCategory" class="toast" role="alert" aria-live="assertive" aria-atomic="true"
+            data-delay="2000">
+            <div
+                class="toast-header {% if message.tags == 'error' %}bg-danger text-white{% elif message.tags == 'success' %}bg-success text-white{% elif message.tags == 'warning' %}bg-warning text-dark{% endif %}">
+                <strong class="mr-auto" style="text-transform: uppercase;">{{ message.tags }}</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</span>
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-1">
+    <section>
+        <h4 class="mb-0"><strong>Parent Categories</strong></h4>
+        <p>Add, edit, or delete a category</p>
+    </section>
+    <button class="btn btn-primary px-4" type="button" data-toggle="modal" data-target="#addNewCategory">
+        <i class="fa-sharp fa-solid fa-plus"></i>
+        &nbsp;
+        Add Category
+    </button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addNewCategory" tabindex="-1" aria-labelledby="addNewCategoryLabel" aria-hidden="true"
+    role="document">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNewCategoryLabel">New Parent Category</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    onclick="clearImagePreview()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'add_parent_category' %}" method="post" enctype="multipart/form-data"
+                    autocomplete="off" id="parentCategoryForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="parent-category" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="parent-category" placeholder="Enter category name"
+                            name="parent_category_name" required>
+                    </div>
+                    <label for="customFile" class="form-label">Logo</label>
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" id="customFile" name="parent_category_icon"
+                            accept="image/jpeg, image/png, image/gif" required>
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                    </div>
+                    <div id="image-preview"></div>
+                    <div class="float-right">
+                        <button type="reset" class="btn btn-secondary" data-dismiss="modal"
+                            onclick="clearImagePreview()">Close</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Content -->
+<div class="card shadow py-2">
+    <div class="card-body">
+        <div class="row">
+            <!-- Display Category -->
+            <div class="col-xl-12">
+                <div class="table-responsive">
+                    <div class="float-left">
+                        <form id="search-form" method="GET" action="">
+                            <div class="form-group">
+                                <input type="text" class="form-control border-1 small" id="search-input" name="search"
+                                    placeholder="Search" aria-label="Search" aria-describedby="basic-addon2"
+                                    value="{% if search_query %}{{ search_query }}{% else %}{% endif %}">
+                            </div>
+                        </form>
+                    </div>
+                    <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Code ID</th>
+                                <th>Name</th>
+                                <th>Logo</th>
+                                <th>Status</th>
+                                <th>Created On</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if parent_category_details %}
+                            {% for categories in parent_category_details %}
+                            <tr>
+                                <td>{{categories.code}}</td>
+                                <td>{{categories.name}}</td>
+                                <td><img src="{{categories.icon.url}}" width="40" height="40" alt=""></td>
+                                <td>
+                                    {% if categories.is_active %}
+                                    Active
+                                    {% else %}
+                                    In Active
+                                    {% endif %}
+                                </td>
+                                <td>{{categories.created_on}}</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                                            data-target="#editModalNo{{categories.id}}">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <a href="{% url 'delete_parent_category' categories.id %}"
+                                            class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+
+                                        <!-- Edit Category Model -->
+                                        <div class="modal fade" id="editModalNo{{categories.id}}" tabindex="-1"
+                                            aria-labelledby="editModalNo{{categories.id}}Label" aria-hidden="true"
+                                            role="document">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editModalNo{{categories.id}}Label">
+                                                            Edit Category</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close" onclick="clearImagePreview()">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{% url 'update_parent_category' categories.id %}"
+                                                            method="post" enctype="multipart/form-data"
+                                                            autocomplete="off" id="editCategoryForm">
+                                                            {% csrf_token %}
+                                                            <div class="mb-3">
+                                                                <label for="parent-category-name-id"
+                                                                    class="form-label float-left">ID</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="parent-category-name-id"
+                                                                    name="parent_category_id" value="{{categories.id}}"
+                                                                    readonly>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="parent-category-name"
+                                                                    class="form-label float-left">Name</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="parent-category-name"
+                                                                    placeholder="Enter category name"
+                                                                    name="edit_parent_category_name"
+                                                                    value="{{categories.name}}" required>
+                                                            </div>
+                                                            <div class="mb-3 float-left">
+                                                                <input type="checkbox" id="edit_parent_category_status"
+                                                                    name="edit_parent_category_status" 
+                                                                    {% if categories.is_active %} checked {% endif %}>
+                                                                <label for="edit_parent_category_status">
+                                                                    {% if categories.is_active %}
+                                                                    Active
+                                                                    {% else %}
+                                                                    Inactive
+                                                                    {% endif %}
+                                                                </label>
+                                                            </div>
+                                                            <div class="float-right">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal"
+                                                                    onclick="clearImagePreview()">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Save
+                                                                    changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                            {% else %}
+                            <tr>
+                                <td colspan="6">No Record</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if parent_category_details.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if parent_category_details.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ parent_category_details.previous_page_number }}"
+                                aria-label="Previous">
+                                <span aria-hidden="true">Previous</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% for num in parent_category_details.paginator.page_range %}
+                        <li class="page-item {% if num == parent_category_details.number %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endfor %}
+                        {% if parent_category_details.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ parent_category_details.next_page_number }}"
+                                aria-label="Next">
+                                <span aria-hidden="true">Next</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Custom Scripts -->
+{% block custom_cripts %}
+<script>
+
+    // Function to perform search
+    function performSearch() {
+        var searchQuery = document.getElementById('search-input').value.toLowerCase();
+        var tableRows = document.querySelectorAll('#myTable tbody tr');
+
+        tableRows.forEach(function (row) {
+            var categoryName = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
+            if (categoryName.includes(searchQuery)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Add event listener to the search input
+    document.getElementById('search-input').addEventListener('input', performSearch);
+
+    // Clear search input and show all rows when the form is submitted
+    document.getElementById('search-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        document.getElementById('search-input').value = '';
+        performSearch();
+    });
+
+    // For Toast message
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastEl = document.getElementById('LiveTostForParentCategory')
+        if (toastEl) {
+            var toast = new bootstrap.Toast(toastEl)
+            toast.show()
+        }
+    })
+
+    // For Label update
+    document.getElementById('customFile').addEventListener('change', function () {
+        var fileName = this.value.split('\\').pop(); // Extract the file name from the input value
+        var label = document.querySelector('.custom-file-label');
+        label.textContent = fileName; // Set the file name as the label text
+    });
+
+    // For preview
+    document.getElementById('customFile').addEventListener('change', function () {
+        var file = this.files[0];
+        var preview = document.getElementById('image-preview');
+        preview.innerHTML = ''; // Clear previous preview, if any
+
+        if (file) {
+            var reader = new FileReader();
+
+            reader.onload = function (event) {
+                var img = document.createElement('img');
+                img.src = event.target.result;
+                img.classList.add('preview-image');
+                preview.appendChild(img);
+            }
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('customFile').addEventListener('change', function (e) {
+        var file = e.target.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var imagePreview = document.getElementById('image-preview');
+            var img = document.createElement('img');
+            img.src = e.target.result;
+            img.classList.add('img-thumbnail');
+            img.style.maxWidth = '200px';
+            img.style.maxHeight = '200px';
+            imagePreview.innerHTML = '';
+            imagePreview.appendChild(img);
+        }
+
+        reader.readAsDataURL(file);
+    });
+
+    function clearImagePreview() {
+        var preview = document.getElementById('image-preview');
+        preview.innerHTML = '';
+    }
+
+</script>
+
+{% endblock custom_cripts %}

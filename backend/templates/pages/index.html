@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Title -->
+    <title>Trade Hub | Admin Dashboard</title>
+
+    <!-- CSS Link -->
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}">
+
+    <!-- Auto Navigation JS -->
+    <script>
+        setTimeout(function () {
+            window.location.href = '{% url 'login' %}'
+        }, 3000);
+    </script>
+</head>
+
+<body>
+    <!-- Loader -->
+    <div id="loader-base">
+        <span class="loader"></span>
+    </div>
+</body>
+
+</html>
