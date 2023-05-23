@@ -61,12 +61,14 @@ class SubCategory(BaseModel):
 
 class Location(BaseModel):
     name = models.CharField(max_length=100)
+    is_active = models.BooleanField(choices=IS_ACTIVE_CHOICES, default=True)
 
     def __str__(self):
         return self.name
 
 class UserRole(BaseModel):
     name = models.CharField(max_length=20)
+    is_active = models.BooleanField(choices=IS_ACTIVE_CHOICES, default=True)
 
     def __str__(self):
         return self.name

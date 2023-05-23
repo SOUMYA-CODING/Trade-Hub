@@ -7,7 +7,7 @@ urlpatterns = [
     # Auth
     path('login/', views.user_login, name="login"),
     path('reset_password/', views.PasswordReset, name="PasswordReset"),
-    path('logout/', views.logout, name="logout"),
+    path('logout_from_dashbaord/', views.logout_from_dashbaord, name="logout_from_dashbaord"),
 
     # Dashboard
     path('dashboard/', views.dashboard, name="dashboard"),
@@ -26,4 +26,13 @@ urlpatterns = [
 
     # Location
     path('location/', views.location, name="location"),
+    path('add_location/', views.add_location, name="add_location"),
+    path('update_location/<int:id>', views.update_location, name="update_location"),
+    path('delete_location/<int:id>', views.delete_location, name="delete_location"),
+
+    # User Roles (Groups)
+    path('user_role/', views.user_role, name="user_role"),
+    path('add_user_role/', views.add_user_role, name="add_user_role"),
+    path('update_user_role/<int:id>', views.update_user_role, name="update_user_role"),
+    path('delete_user_role/<int:id>', views.delete_user_role, name="delete_user_role"),
 ]

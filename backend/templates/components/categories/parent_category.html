@@ -254,6 +254,15 @@ active
 {% block custom_cripts %}
 <script>
 
+    // For Toast message
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastEl = document.getElementById('LiveTostForParentCategory')
+        if (toastEl) {
+            var toast = new bootstrap.Toast(toastEl)
+            toast.show()
+        }
+    })
+
     // Function to perform search
     function performSearch() {
         var searchQuery = document.getElementById('search-input').value.toLowerCase();
@@ -278,15 +287,6 @@ active
         document.getElementById('search-input').value = '';
         performSearch();
     });
-
-    // For Toast message
-    document.addEventListener('DOMContentLoaded', function () {
-        var toastEl = document.getElementById('LiveTostForParentCategory')
-        if (toastEl) {
-            var toast = new bootstrap.Toast(toastEl)
-            toast.show()
-        }
-    })
 
     // For Label update
     document.getElementById('customFile').addEventListener('change', function () {

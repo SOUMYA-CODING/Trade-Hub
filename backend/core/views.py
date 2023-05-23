@@ -76,13 +76,9 @@ def PasswordReset(request):
 
 
 # Logout
-def logout(request):
+def logout_from_dashbaord(request):
     logout(request)
     return redirect('login')
-
-# Location
-def location(request):
-    return render(request, 'components/location.html')
 
 
 # Dashboard
@@ -134,6 +130,7 @@ def add_parent_category(request):
                 messages.success(request, "Category Created")
             except Exception as e:
                 messages.error(request, str(e))
+                
     return redirect('parent_category')
 
 
@@ -171,6 +168,7 @@ def delete_parent_category(request, id):
         messages.success(request, "Deleted Successfully")
     except ParentCategory.DoesNotExist:
         pass
+
     return redirect('parent_category')
 
 
@@ -215,7 +213,7 @@ def add_sub_category(request):
         final_code = parent_category_code + code
 
         if SubCategory.objects.filter(name=sub_category_name).exists():
-            messages.error(request, "Category Does Not Exist")
+            messages.error(request, "Category Already Exists")
         else:
             try:
                 category = SubCategory(category=parent_category_name, name=sub_category_name, code=final_code)
@@ -261,4 +259,166 @@ def delete_sub_category(request, id):
         messages.success(request, "Deleted Successfully")
     except SubCategory.DoesNotExist:
         pass
+
     return redirect('sub_category')
+
+
+# Location
+@login_required(login_url='login')
+def location(request):
+    all_location_names = Location.objects.all()
+
+    # Pagination
+    paginator = Paginator(all_location_names, 5)  # Show 5 records per page
+    page_number = request.GET.get('page')  # Get the current page number from the request
+    page_obj = paginator.get_page(page_number)  # Get the current page object
+
+    # Search
+    search_query = request.GET.get('search')
+
+    if search_query:
+        all_location_names = all_location_names.filter(
+            Q(name__icontains=search_query) | Q(id__icontains=search_query) | Q(id__icontains=search_query)
+        )
+
+    context = {
+        'all_location_names': page_obj,
+        'search_query': search_query,
+    }
+
+    return render(request, 'components/location.html', context)
+
+
+# Add Location
+@login_required(login_url='login')
+def add_location(request):
+    if request.method == "POST":
+        location_name = request.POST.get('location_name')
+
+        if Location.objects.filter(name=location_name).exists():
+            messages.error(request, "Location Already Exist")
+        else:
+            try:
+                name_of_location = Location(name=location_name)
+                name_of_location.save()
+                messages.success(request, "Location Added")
+            except Exception as e:
+                messages.error(request, e)
+
+    return redirect('location')
+
+
+# Update Location
+@login_required(login_url='login')
+def update_location(request, id):
+    # Get the ID
+    id = id
+
+    if request.method == "POST":
+        name = request.POST.get('edit_Location_name')
+        is_active = request.POST.get('edit_location_status') == 'on'
+
+        if not Location.objects.filter(id=id).exists():
+            messages.error(request, "Location Does Not Exist")
+        else:
+            try:
+                location_data = Location.objects.get(id=id)
+                location_data.name = name
+                location_data.is_active = is_active
+                location_data.save()
+                messages.success(request, "Location Updated Successfully")
+            except Exception as e:
+                messages.error(request, "Error Updating Location: " + str(e))
+
+    return redirect('location')
+
+
+# Delete Location
+@login_required(login_url='login')
+def delete_location(request, id):
+    try:
+        location_data = Location.objects.get(id=id)
+        location_data.delete()
+        messages.success(request, "Deleted Successfully")
+    except Location.DoesNotExist:
+        pass
+
+    return redirect('location')
+
+
+# User Role
+def user_role(request):
+    all_group_names = UserRole.objects.all()
+
+    # Pagination
+    paginator = Paginator(all_group_names, 5)  # Show 5 records per page
+    page_number = request.GET.get('page')  # Get the current page number from the request
+    page_obj = paginator.get_page(page_number)  # Get the current page object
+
+    # Search
+    search_query = request.GET.get('search')
+
+    if search_query:
+        all_group_names = all_group_names.filter(
+            Q(name__icontains=search_query) | Q(id__icontains=search_query) | Q(id__icontains=search_query)
+        )
+
+    context = {
+        'all_group_names': page_obj,
+        'search_query': search_query,
+    }
+
+    return render(request, 'components/groups.html', context)
+
+
+# User Role
+def add_user_role(request):
+    if request.method == "POST":
+        group_name = request.POST.get('group_name')
+
+        if UserRole.objects.filter(name=group_name).exists():
+            messages.error(request, "Group Already Exist")
+        else:
+            try:
+                name_of_location = UserRole(name=group_name)
+                name_of_location.save()
+                messages.success(request, "Group Added")
+            except Exception as e:
+                messages.error(request, e)
+
+    return redirect('user_role')
+
+
+# User Role
+def update_user_role(request, id):
+    # Get the ID
+    id = id
+
+    if request.method == "POST":
+        name = request.POST.get('edit_group_name')
+        is_active = request.POST.get('edit_group_status') == 'on'
+
+        if not UserRole.objects.filter(id=id).exists():
+            messages.error(request, "Group Does Not Exist")
+        else:
+            try:
+                user_role_data = UserRole.objects.get(id=id)
+                user_role_data.name = name
+                user_role_data.is_active = is_active
+                user_role_data.save()
+                messages.success(request, "Group Updated Successfully")
+            except Exception as e:
+                messages.error(request, "Error Updating Group: " + str(e))
+
+    return redirect('user_role')
+
+
+# User Role
+def delete_user_role(request, id):
+    try:
+        group_data = UserRole.objects.get(id=id)
+        group_data.delete()
+        messages.success(request, "Deleted Successfully")
+    except Location.DoesNotExist:
+        pass
+    return redirect('user_role')

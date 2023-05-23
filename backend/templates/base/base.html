@@ -112,14 +112,14 @@
 
             <!-- Places -->
             <li class="nav-item {% block location_active %}{% endblock location_active %}">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{% url 'location' %}">
                     <i class="fa-sharp fa-solid fa-location-dot"></i>
                     <span>Locations</span></a>
             </li>
 
             <!-- Groups -->
             <li class="nav-item {% block groups_active %}{% endblock groups_active %}">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{% url 'user_role' %}">
                     <i class="fa-solid fa-users"></i>
                     <span>Groups</span>
                 </a>
