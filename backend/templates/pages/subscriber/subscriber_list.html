@@ -1,0 +1,194 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+<!-- Title -->
+{% block title %}
+Trade Hub | Subscriber
+{% endblock title %}
+
+<!-- Active State -->
+{% block subscriber_active %}
+active
+{% endblock subscriber_active %}
+
+<!-- Content -->
+{% block content %}
+
+<!-- Messages -->
+<span>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="position-fixed top-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
+        <div id="LiveTostForSubscriber" class="toast" role="alert" aria-live="assertive" aria-atomic="true"
+            data-delay="2000">
+            <div
+                class="toast-header {% if message.tags == 'error' %}bg-danger text-white{% elif message.tags == 'success' %}bg-success text-white{% elif message.tags == 'warning' %}bg-warning text-dark{% endif %}">
+                <strong class="mr-auto" style="text-transform: uppercase;">{{ message.tags }}</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</span>
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-1">
+    <section>
+        <h4 class="mb-0"><strong>Subscriber</strong></h4>
+        <p>Add, edit, or delete a subscriber</p>
+    </section>
+    <button class="btn btn-primary px-4" type="button">
+        <i class="fa-sharp fa-solid fa-plus"></i>
+        &nbsp;
+        Add Subscriber
+    </button>
+</div>
+
+<!-- Page Content -->
+<div class="card shadow py-2">
+    <div class="card-body">
+        <div class="row">
+            <!-- Display Category -->
+            <div class="col-xl-12">
+                <div class="table-responsive">
+                    <div class="float-left">
+                        <form id="search-form" method="GET" action="">
+                            <div class="form-group">
+                                <input type="text" class="form-control border-1 small" id="search-input" name="search"
+                                    placeholder="Search" aria-label="Search" aria-describedby="basic-addon2"
+                                    value="{% if search_query %}{{ search_query }}{% else %}{% endif %}">
+                            </div>
+                        </form>
+                    </div>
+                    <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Group</th>
+                                <th>Status</th>
+                                <th>Registed On</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if subscriber_lists %}
+                            {% for subscriber_data in subscriber_lists %}
+                            <tr>
+                                <td>{{subscriber_data.id}}</td>
+                                <td>{{ subscriber_data.first_name|add:" "|add:subscriber_data.last_name }}</td>
+                                    <td>{{subscriber_data.email}}</td>
+                                <td>{{subscriber_data.role}}</td>
+                                <td>
+                                    {% if subscriber_data.is_active %}
+                                    Active
+                                    {% else %}
+                                    In Active
+                                    {% endif %}
+                                </td>
+                                <td>{{subscriber_data.created_on}}</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                                            data-target="#editModalNo{{subscriber_data.id}}">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <a href=""
+                                            class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                            {% else %}
+                            <tr>
+                                <td colspan="6">No Record</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if subscriber_lists.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if subscriber_lists.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ subscriber_lists.previous_page_number }}"
+                                aria-label="Previous">
+                                <span aria-hidden="true">Previous</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% for num in subscriber_lists.paginator.page_range %}
+                        <li class="page-item {% if num == subscriber_lists.number %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endfor %}
+                        {% if subscriber_lists.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ subscriber_lists.next_page_number }}"
+                                aria-label="Next">
+                                <span aria-hidden="true">Next</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Custom Scripts -->
+{% block custom_cripts %}
+<script>
+    // For Toast message
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastEl = document.getElementById('LiveTostForSubscriber')
+        if (toastEl) {
+            var toast = new bootstrap.Toast(toastEl)
+            toast.show()
+        }
+    })
+
+    // Function to perform search
+    function performSearch() {
+        var searchQuery = document.getElementById('search-input').value.toLowerCase();
+        var tableRows = document.querySelectorAll('#myTable tbody tr');
+
+        tableRows.forEach(function (row) {
+            var categoryName = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
+            if (categoryName.includes(searchQuery)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Add event listener to the search input
+    document.getElementById('search-input').addEventListener('input', performSearch);
+
+    // Clear search input and show all rows when the form is submitted
+    document.getElementById('search-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        document.getElementById('search-input').value = '';
+        performSearch();
+    });
+
+</script>
+
+{% endblock custom_cripts %}

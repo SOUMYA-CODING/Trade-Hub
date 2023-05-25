@@ -1,0 +1,279 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+<!-- Title -->
+{% block title %}
+Trade Hub | Shop Category
+{% endblock title %}
+
+<!-- Active State -->
+{% block catgeory_active %}
+active
+{% endblock catgeory_active %}
+
+<!-- Content -->
+{% block content %}
+
+<!-- Messages -->
+<span>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="position-fixed top-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
+        <div id="LiveTostForShopCategory" class="toast" role="alert" aria-live="assertive" aria-atomic="true"
+            data-delay="2000">
+            <div
+                class="toast-header {% if message.tags == 'error' %}bg-danger text-white{% elif message.tags == 'success' %}bg-success text-white{% elif message.tags == 'warning' %}bg-warning text-dark{% endif %}">
+                <strong class="mr-auto" style="text-transform: uppercase;">{{ message.tags }}</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</span>
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-1">
+    <section>
+        <h4 class="mb-0"><strong>Shop Categories</strong></h4>
+        <p>Add, edit, or delete a category</p>
+    </section>
+    <button class="btn btn-primary px-4" type="button" data-toggle="modal" data-target="#addShopCategory">
+        <i class="fa-sharp fa-solid fa-plus"></i>
+        &nbsp;
+        Add Location
+    </button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addShopCategory" tabindex="-1" aria-labelledby="addShopCategoryLabel" aria-hidden="true"
+    role="document">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addShopCategoryLabel">New Shop Category</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'add_shop_category' %}" method="post"
+                    autocomplete="off">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="shop-category-name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="shop-category-name" placeholder="Enter shop category name"
+                            name="shop_category_name" required>
+                    </div>
+                    <div class="float-right">
+                        <button type="reset" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Content -->
+<div class="card shadow py-2">
+    <div class="card-body">
+        <div class="row">
+            <!-- Display Category -->
+            <div class="col-xl-12">
+                <div class="table-responsive">
+                    <div class="float-left">
+                        <form id="search-form" method="GET" action="">
+                            <div class="form-group">
+                                <input type="text" class="form-control border-1 small" id="search-input" name="search"
+                                    placeholder="Search" aria-label="Search" aria-describedby="basic-addon2"
+                                    value="{% if search_query %}{{ search_query }}{% else %}{% endif %}">
+                            </div>
+                        </form>
+                    </div>
+                    <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Created On</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if shop_category_details %}
+                            {% for shop_category_data in shop_category_details %}
+                            <tr>
+                                <td>{{shop_category_data.id}}</td>
+                                <td>{{shop_category_data.name}}</td>
+                                <td>
+                                    {% if shop_category_data.is_active %}
+                                    Active
+                                    {% else %}
+                                    In Active
+                                    {% endif %}
+                                </td>
+                                <td>{{shop_category_data.created_on}}</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                                            data-target="#editModalNo{{shop_category_data.id}}">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <a href="{% url 'delete_shop_category' shop_category_data.id %}"
+                                            class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+
+                                        <!-- Edit Category Model -->
+                                        <div class="modal fade" id="editModalNo{{shop_category_data.id}}" tabindex="-1"
+                                            aria-labelledby="editModalNo{{shop_category_data.id}}Label" aria-hidden="true"
+                                            role="document">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editModalNo{{shop_category_data.id}}Label">
+                                                            Edit Shop Category</h5>
+                                                        <button type="button" class="close" data-dismiss="modal">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{% url 'update_shop_category' shop_category_data.id %}"
+                                                            method="post" enctype="multipart/form-data"
+                                                            autocomplete="off" id="editCategoryForm">
+                                                            {% csrf_token %}
+                                                            <div class="mb-3">
+                                                                <label for="shop-category-id"
+                                                                    class="form-label float-left">ID</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="shop-category-id"
+                                                                    name="shop_category_id" value="{{shop_category_data.id}}"
+                                                                    readonly>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="edit-shop-name"
+                                                                    class="form-label float-left">Name</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="edit-shop-name"
+                                                                    placeholder="Enter location name"
+                                                                    name="edit_shop_name"
+                                                                    value="{{shop_category_data.name}}" required>
+                                                            </div>
+                                                            <div class="mb-3 float-left">
+                                                                <input type="checkbox" id="edit_shop_status"
+                                                                    name="edit_shop_status" 
+                                                                    {% if shop_category_data.is_active %} checked {% endif %}>
+                                                                <label for="edit_shop_status">
+                                                                    {% if shop_category_data.is_active %}
+                                                                    Active
+                                                                    {% else %}
+                                                                    Inactive
+                                                                    {% endif %}
+                                                                </label>
+                                                            </div>
+                                                            <div class="float-right">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Save
+                                                                    changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                            {% else %}
+                            <tr>
+                                <td colspan="6">No Record</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if shop_category_details.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if shop_category_details.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ shop_category_details.previous_page_number }}"
+                                aria-label="Previous">
+                                <span aria-hidden="true">Previous</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% for num in shop_category_details.paginator.page_range %}
+                        <li class="page-item {% if num == shop_category_details.number %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endfor %}
+                        {% if shop_category_details.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ shop_category_details.next_page_number }}"
+                                aria-label="Next">
+                                <span aria-hidden="true">Next</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Custom Scripts -->
+{% block custom_cripts %}
+<script>
+    // For Toast message
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastEl = document.getElementById('LiveTostForShopCategory')
+        if (toastEl) {
+            var toast = new bootstrap.Toast(toastEl)
+            toast.show()
+        }
+    })
+
+    // Function to perform search
+    function performSearch() {
+        var searchQuery = document.getElementById('search-input').value.toLowerCase();
+        var tableRows = document.querySelectorAll('#myTable tbody tr');
+
+        tableRows.forEach(function (row) {
+            var categoryName = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
+            if (categoryName.includes(searchQuery)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Add event listener to the search input
+    document.getElementById('search-input').addEventListener('input', performSearch);
+
+    // Clear search input and show all rows when the form is submitted
+    document.getElementById('search-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        document.getElementById('search-input').value = '';
+        performSearch();
+    });
+
+</script>
+
+{% endblock custom_cripts %}

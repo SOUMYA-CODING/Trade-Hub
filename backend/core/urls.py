@@ -12,6 +12,12 @@ urlpatterns = [
     # Dashboard
     path('dashboard/', views.dashboard, name="dashboard"),
 
+    # Shop Category
+    path('shop_category/', views.shop_category, name="shop_category"),
+    path('add_shop_category/', views.add_shop_category, name="add_shop_category"),
+    path('update_shop_category/<int:id>', views.update_shop_category, name="update_shop_category"),
+    path('delete_shop_category/<int:id>', views.delete_shop_category, name="delete_shop_category"),
+
     # Parent Category
     path('parent_category/', views.parent_category, name="parent_category"),
     path('add_parent_category/', views.add_parent_category, name="add_parent_category"),
@@ -35,4 +41,7 @@ urlpatterns = [
     path('add_user_role/', views.add_user_role, name="add_user_role"),
     path('update_user_role/<int:id>', views.update_user_role, name="update_user_role"),
     path('delete_user_role/<int:id>', views.delete_user_role, name="delete_user_role"),
+
+    # Subscriber
+    path('subscriber_list/', views.subscriber_list, name="subscriber_list"),
 ]

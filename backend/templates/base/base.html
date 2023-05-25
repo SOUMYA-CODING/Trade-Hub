@@ -53,7 +53,7 @@
 
             <!-- Subscribers -->
             <li class="nav-item {% block subscriber_active %}{% endblock subscriber_active %}">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{% url 'subscriber_list' %}">
                     <i class="fa-solid fa-shop"></i>
                     <span>Subscribers</span></a>
             </li>
@@ -99,13 +99,14 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#categories-button"
                     aria-expanded="true" aria-controls="categories-button">
                     <i class="fa-solid fa-table-list"></i>
-                    <span>Product Categories</span>
+                    <span>Categories</span>
                 </a>
                 <div id="categories-button" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{% url 'parent_category' %}">Parent Category</a>
-                        <a class="collapse-item" href="{% url 'sub_category' %}">Sub Category</a>
+                        <a class="collapse-item" href="{% url 'shop_category' %}">Shop Category</a>
+                        <a class="collapse-item" href="{% url 'parent_category' %}">Product Parent Category</a>
+                        <a class="collapse-item" href="{% url 'sub_category' %}">Product Sub Category</a>
                     </div>
                 </div>
             </li>

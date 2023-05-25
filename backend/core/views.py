@@ -87,7 +87,90 @@ def dashboard(request):
     return render(request, 'pages/dashboard/dashboard.html')
 
 
-# Parent Category View
+# Shop Category
+@login_required(login_url='login')
+def shop_category(request):
+    shop_category_details = ShopCategory.objects.all()
+
+    # Pagination
+    paginator = Paginator(shop_category_details, 5)  # Show 5 records per page
+    page_number = request.GET.get('page')  # Get the current page number from the request
+    page_obj = paginator.get_page(page_number)  # Get the current page object
+
+    # Search
+    search_query = request.GET.get('search')
+
+    if search_query:
+        shop_category_details = shop_category_details.filter(
+            Q(name__icontains=search_query) | Q(code__icontains=search_query) | Q(id__icontains=search_query)
+        )
+
+    context = {
+        'shop_category_details': page_obj,
+        'search_query': search_query,
+    }
+
+    return render(request, 'components/categories/shop_category.html', context)
+
+
+# Add Shop Category
+@login_required(login_url='login')
+def add_shop_category(request):
+    if request.method == "POST":
+        shop_category_name = request.POST.get('shop_category_name')
+
+        if ShopCategory.objects.filter(name=shop_category_name).exists():
+            messages.error(request, "Category Already Exist")
+        else:
+            try:
+                name_of_category = ShopCategory(name=shop_category_name)
+                name_of_category.save()
+                messages.success(request, "Category Added")
+            except Exception as e:
+                messages.error(request, e)
+
+    return redirect('shop_category')
+
+
+# Update Shop Category
+@login_required(login_url='login')
+def update_shop_category(request, id):
+    # Get the ID
+    id = id
+
+    if request.method == "POST":
+        name = request.POST.get('edit_shop_name')
+        is_active = request.POST.get('edit_shop_status') == 'on'
+
+        if not ShopCategory.objects.filter(id=id).exists():
+            messages.error(request, "Category Does Not Exist")
+        else:
+            try:
+                shop_data = ShopCategory.objects.get(id=id)
+                shop_data.name = name
+                shop_data.is_active = is_active
+                shop_data.save()
+                messages.success(request, "Category Updated Successfully")
+            except Exception as e:
+                messages.error(request, "Error Updating Category: " + str(e))
+
+    return redirect('shop_category')
+
+
+# Delete Shop Category
+@login_required(login_url='login')
+def delete_shop_category(request, id):
+    try:
+        shop_category_data = ShopCategory.objects.get(id=id)
+        shop_category_data.delete()
+        messages.success(request, "Deleted Successfully")
+    except ShopCategory.DoesNotExist:
+        pass
+
+    return redirect('shop_category')
+    
+
+# Parent Category
 @login_required(login_url='login')
 def parent_category(request):
     parent_category_details = ParentCategory.objects.all()
@@ -347,6 +430,7 @@ def delete_location(request, id):
 
 
 # User Role
+@login_required(login_url='login')
 def user_role(request):
     all_group_names = UserRole.objects.all()
 
@@ -372,6 +456,7 @@ def user_role(request):
 
 
 # User Role
+@login_required(login_url='login')
 def add_user_role(request):
     if request.method == "POST":
         group_name = request.POST.get('group_name')
@@ -390,6 +475,7 @@ def add_user_role(request):
 
 
 # User Role
+@login_required(login_url='login')
 def update_user_role(request, id):
     # Get the ID
     id = id
@@ -414,6 +500,7 @@ def update_user_role(request, id):
 
 
 # User Role
+@login_required(login_url='login')
 def delete_user_role(request, id):
     try:
         group_data = UserRole.objects.get(id=id)
@@ -422,3 +509,29 @@ def delete_user_role(request, id):
     except Location.DoesNotExist:
         pass
     return redirect('user_role')
+
+
+# Subscriber List
+@login_required(login_url='login')
+def subscriber_list(request):
+    subscriber_lists = Subscriber.objects.all()
+
+    # Pagination
+    paginator = Paginator(subscriber_lists, 5)  # Show 5 records per page
+    page_number = request.GET.get('page')  # Get the current page number from the request
+    page_obj = paginator.get_page(page_number)  # Get the current page object
+
+    # Search
+    search_query = request.GET.get('search')
+
+    if search_query:
+        subscriber_lists = subscriber_lists.filter(
+            Q(name__icontains=search_query) | Q(id__icontains=search_query)
+        )
+
+    context = {
+        'subscriber_lists': page_obj,
+        'search_query': search_query,
+    }
+
+    return render(request, 'pages/subscriber/subscriber_list.html', context)
