@@ -44,4 +44,5 @@ urlpatterns = [
 
     # Subscriber
     path('subscriber_list/', views.subscriber_list, name="subscriber_list"),
+    path('new_subscriber/', views.add_subscriber, name="add_subscriber")
 ]

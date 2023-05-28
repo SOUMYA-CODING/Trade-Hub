@@ -535,3 +535,35 @@ def subscriber_list(request):
     }
 
     return render(request, 'pages/subscriber/subscriber_list.html', context)
+
+
+# Add Subscriber
+@login_required(login_url='login')
+def add_subscriber(request):
+
+    # Get the Location lsit
+    location_list = Location.objects.all()
+
+    context = {
+        'location_list': location_list,
+    }
+
+    if request.method == "POST":
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        date_of_birth = request.POST.get('date_of_birth')
+        age = request.POST.get('age')
+
+        phone_number = request.POST.get('phone_number')
+        email_address = request.POST.get('email_address')
+        present_address = request.POST.get('present_address')
+        permanent_address = request.POST.get('permanent_address')
+
+        permanent_address = request.POST.get('permanent_address')
+        permanent_address = request.POST.get('permanent_address')
+        permanent_address = request.POST.get('permanent_address')
+        permanent_address = request.POST.get('permanent_address')
+        permanent_address = request.POST.get('permanent_address')
+        permanent_address = request.POST.get('permanent_address')
+
+    return render(request, 'pages/subscriber/new_subscriber.html', context)

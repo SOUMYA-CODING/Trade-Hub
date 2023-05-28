@@ -1,0 +1,442 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+<!-- Title -->
+{% block title %}
+Trade Hub | New Subscriber
+{% endblock title %}
+
+<!-- Active State -->
+{% block subscriber_active %}
+active
+{% endblock subscriber_active %}
+
+<!-- Content -->
+{% block content %}
+
+<!-- Messages -->
+<span>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="position-fixed top-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
+        <div id="LiveTostForNewSubscriber" class="toast" role="alert" aria-live="assertive" aria-atomic="true"
+            data-delay="2000">
+            <div
+                class="toast-header {% if message.tags == 'error' %}bg-danger text-white{% elif message.tags == 'success' %}bg-success text-white{% elif message.tags == 'warning' %}bg-warning text-dark{% endif %}">
+                <strong class="mr-auto" style="text-transform: uppercase;">{{ message.tags }}</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</span>
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-1">
+    <section>
+        <h4 class="mb-0"><strong>Subscriber</strong></h4>
+        <p>Add a new subscriber</p>
+    </section>
+</div>
+
+<!-- Page Content -->
+<form action="{% url 'add_subscriber' %}" method="post" enctype="multipart/form-data" autocomplete="off">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow py-2 mb-3">
+                <div class="card-body">
+                    <label><strong>Personal Information</strong></label>
+                    <div class="form-row mb-3">
+                        <div class="form-group col-md-6">
+                            <label for="first-name" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="first-name" placeholder="Enter first name"
+                                name="first_name" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="last-name" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="last-name" placeholder="Enter last name"
+                                name="last_name" required>
+                        </div>
+                    </div>
+                    <div class="form-row mb-3">
+                        <div class="form-group col-md-6">
+                            <label for="date-of-birth" class="form-label">Date of birth</label>
+                            <input type="date" class="form-control" id="date-of-birth" placeholder="Enter DOB"
+                                name="date_of_birth" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" placeholder="Enter age" name="age"
+                                required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow py-2 mb-3">
+                <div class="card-body">
+                    <label><strong>Contact Information</strong></label>
+                    <div class="form-row mb-3">
+                        <div class="form-group col-md-6">
+                            <label for="phone-number" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone-number" placeholder="Enter phone number"
+                                name="phone_number" maxlength="10" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="email-address" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email-address"
+                                placeholder="Enter email address" name="email_address" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="present-address" class="form-label">Present Address</label>
+                            <input type="text" class="form-control" id="present-address"
+                                placeholder="Enter present address" name="present_address" required>
+                        </div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="same-as-present-address">
+                        <label class="form-check-label" for="same-as-present-address">
+                            same as present address
+                        </label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="permanent-address" class="form-label">Permanent Address</label>
+                            <input type="text" class="form-control" id="permanent-address" name="permanent_address"
+                                placeholder="Enter permanent address" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="countryId">State</label>
+                            <select name="country" class="countries form-control" id="countryId" required>
+                                <option value="">Select Country</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="stateId">State</label>
+                            <select name="personal_state" class="states form-control" id="stateId" required>
+                                <option value="">Select State</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="cityId">City</label>
+                            <select name="personal_city" class="cities form-control" id="cityId" required>
+                                <option value="">Select City</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="shop-pincode">Pincode</label>
+                            <input type="text" class="form-control" id="shop-pincode" name="shop_pincode" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow py-2 mb-3">
+                <div class="card-body">
+                    <label><strong>Shop Information</strong></label>
+                    <div class="form-row mb-3">
+                        <div class="form-group col-md-6">
+                            <label for="shop-name" class="form-label">Shop Name</label>
+                            <input type="text" class="form-control" id="shop-name" placeholder="Enter shop name"
+                                name="shop_name" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="shop-type" class="form-label">Shop Type</label>
+                            <input type="text" class="form-control" id="shop-type" placeholder="Enter shop type"
+                                name="shop_type" required>
+                        </div>
+                    </div>
+                    <div class="form-row mb-3">
+                        <div class="form-group col-md-6">
+                            <label for="shop-establishment" class="form-label">Shop Establishment Date</label>
+                            <input type="date" class="form-control" id="shop-establishment"
+                                placeholder="Enter shop establishment" name="shop_establishment" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="shop-employee" class="form-label">Shop Employee</label>
+                            <input type="number" class="form-control" id="shop-employee"
+                                placeholder="Enter number of employee" name="shop_employee" required>
+                        </div>
+                    </div>
+                    <div class="form-row mb-3">
+                        <div class="form-group col-md-6">
+                            <label for="shop-opening-time" class="form-label">Shop Opening Time</label>
+                            <input type="time" class="form-control" id="shop-opening-time"
+                                placeholder="Enter shop opening time" name="shop_opening_time">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="shop-closing-time" class="form-label">Shop Closing Time</label>
+                            <input type="time" class="form-control" id="shop-closing-time"
+                                placeholder="Enter shop closing time" name="shop_closing_time">
+                        </div>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="is-your-shop-on-rent" required
+                            name="is_your_shop_on_rent">
+                        <label class="form-check-label" for="is-your-shop-on-rent">
+                            Is Your Shop on Rent
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow py-2 mb-3">
+                <div class="card-body">
+                    <label><strong>Shop Contact Information</strong></label>
+                    <div class="form-row mb-3">
+                        <div class="form-group col-md-6">
+                            <label for="shop-phone-number" class="form-label">Shop Phone Number</label>
+                            <input type="tel" class="form-control" id="shop-phone-number"
+                                placeholder="Enter phone number" name="shop_phone_number" maxlength="10" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="shop-email-address" class="form-label">Shop Email Address</label>
+                            <input type="email" class="form-control" id="shop_email-address"
+                                placeholder="Enter email address" name="shop_email_address">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="shop-address-one" class="form-label">Shop Address</label>
+                            <input type="text" class="form-control" id="shop-address-one"
+                                placeholder="Enter address one" name="shop_present_address" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow py-2 mb-3">
+                <div class="card-body">
+                    <label><strong>Personal Documents</strong></label><br>
+                    <label for="personal_photo" class="form-label">Photo</label>
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" id="personal_photo" name="personal_photo"
+                            accept="image/jpeg, image/png, image/gif" required>
+                        <label class="custom-file-label for-personal" for="personal_photo">Choose file</label>
+                    </div>
+                    <label for="signature" class="form-label">Signature</label>
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" id="signature" name="personal_signature"
+                            accept="image/jpeg, image/png, image/gif" required>
+                        <label class="custom-file-label for-signature" for="signature">Choose file</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="aadhar-number" class="form-label">Aadhar Number</label>
+                        <input type="text" class="form-control" id="aadhar-number" placeholder="Enter aadhar number"
+                            name="aadhar_number" required>
+                    </div>
+                    <label for="aadhar-photo" class="form-label">Aadhar Photo</label>
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" id="aadhar-photo" name="aadhar_photo"
+                            accept="image/jpeg, image/png, image/gif" required>
+                        <label class="custom-file-label for-aadhar" for="aadhar-photo">Choose file</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pan-number" class="form-label">Pan Number</label>
+                        <input type="text" class="form-control" id="pan-number" placeholder="Enter aadhar number"
+                            name="pan_number">
+                    </div>
+                    <label for="pan-photo" class="form-label">Pan Photo</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="pan-photo"
+                            accept="image/jpeg, image/png, image/gif" name="pan_photo">
+                        <label class="custom-file-label for-pan" for="pan-photo">Choose file</label>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow py-2 mb-3">
+                <div class="card-body">
+                    <label><strong>Shop Documents</strong></label><br>
+                    <label for="shop-logo" class="form-label">Shop Logo</label>
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" id="shop-logo" name="shop_logo"
+                            accept="image/jpeg, image/png, image/gif" required>
+                        <label class="custom-file-label for-shop-logo" for="shop-logo">Choose file</label>
+                    </div>
+                    <label for="shop-image" class="form-label">Shop Image</label>
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" id="shop-image" name="shop_image"
+                            accept="image/jpeg, image/png, image/gif" required>
+                        <label class="custom-file-label for-shop-image" for="shop-image">Choose file</label>
+                    </div>
+                    <label for="shop-trade-certificate" class="form-label">Shop Trade Agreement Certificate</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="shop-trade-certificate"
+                            name="shop_trade_certificate" accept="image/jpeg, image/png, image/gif">
+                        <label class="custom-file-label for-certificate" for="shop-trade-certificate">Choose
+                            file</label>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow py-2 mb-3">
+                <div class="card-body">
+                    <label><strong>Shop Tax Information</strong></label><br>
+                    <div>
+                        <label for="gst-number" class="form-label">GST Number</label>
+                        <input type="text" class="form-control" id="gst-number" placeholder="Enter gst number"
+                            name="gst_number">
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow py-2 mb-3">
+                <div class="card-body">
+                    <label><strong>Shop Target Location</strong></label><br>
+                    <div>
+                        <label for="shop-target-location">Location</label>
+                        <select class="form-control" id="shop-target-location" name="shop_target_location" required>
+                            <option>Select State</option>
+                            {% for location_lists in location_list %}
+                            <option value="{{location_lists.name}}">{{location_lists.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <a href="" class="btn btn-danger">Cancle</a>
+                <button type="submit" class="btn btn-primary ml-2">Submit</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock content %}
+
+<!-- Custom Scripts -->
+{% block custom_cripts %}
+<script>
+    // For Toast message
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastEl = document.getElementById('LiveTostForNewSubscriber')
+        if (toastEl) {
+            var toast = new bootstrap.Toast(toastEl)
+            toast.show()
+        }
+    })
+
+
+    // Get the date of birth input field.
+    const dateOfBirthInput = document.getElementById("date-of-birth");
+
+    // Get the age input field.
+    const ageInput = document.getElementById("age");
+
+    // When the date of birth input field changes, calculate the age and display it in the age input field.
+    dateOfBirthInput.addEventListener("change", () => {
+        // Get the date of birth value.
+        const dateOfBirth = dateOfBirthInput.value;
+
+        // Create a new Date object from the date of birth value.
+        const dob = new Date(dateOfBirth);
+
+        // Get the current date.
+        const today = new Date();
+
+        // Calculate the age.
+        const age = today.getFullYear() - dob.getFullYear() - (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate()));
+
+        // Set the age value in the age input field.
+        ageInput.value = age;
+    });
+
+    // For Label update personal photo
+    document.getElementById('personal_photo').addEventListener('change', function () {
+        var fileName = this.value.split('\\').pop(); // Extract the file name from the input value
+        var label = document.querySelector('.custom-file-label.for-personal');
+        label.textContent = fileName; // Set the file name as the label text
+    });
+
+    // For Label update signature
+    document.getElementById('signature').addEventListener('change', function () {
+        var fileName = this.value.split('\\').pop(); // Extract the file name from the input value
+        var label = document.querySelector('.custom-file-label.for-signature');
+        label.textContent = fileName; // Set the file name as the label text
+    });
+
+    // For Label update aadhar-photo
+    document.getElementById('aadhar-photo').addEventListener('change', function () {
+        var fileName = this.value.split('\\').pop(); // Extract the file name from the input value
+        var label = document.querySelector('.custom-file-label.for-aadhar');
+        label.textContent = fileName; // Set the file name as the label text
+    });
+
+    // For Label update pan-photo
+    document.getElementById('pan-photo').addEventListener('change', function () {
+        var fileName = this.value.split('\\').pop(); // Extract the file name from the input value
+        var label = document.querySelector('.custom-file-label.for-pan');
+        label.textContent = fileName; // Set the file name as the label text
+    });
+
+
+    // For Label update shop logo
+    document.getElementById('shop-logo').addEventListener('change', function () {
+        var fileName = this.value.split('\\').pop(); // Extract the file name from the input value
+        var label = document.querySelector('.custom-file-label.for-shop-logo');
+        label.textContent = fileName; // Set the file name as the label text
+    });
+
+    // For Label update shop image
+    document.getElementById('shop-image').addEventListener('change', function () {
+        var fileName = this.value.split('\\').pop(); // Extract the file name from the input value
+        var label = document.querySelector('.custom-file-label.for-shop-image');
+        label.textContent = fileName; // Set the file name as the label text
+    });
+
+    // For Label update certificate
+    document.getElementById('shop-trade-certificate').addEventListener('change', function () {
+        var fileName = this.value.split('\\').pop(); // Extract the file name from the input value
+        var label = document.querySelector('.custom-file-label.for-certificate');
+        label.textContent = fileName; // Set the file name as the label text
+    });
+
+    const presentAddressInput = document.getElementById("present-address");
+    const permanentAddressInput = document.getElementById("permanent-address");
+    const sameAsPresentAddressCheckbox = document.getElementById("same-as-present-address");
+
+    sameAsPresentAddressCheckbox.addEventListener("change", () => {
+        if (sameAsPresentAddressCheckbox.checked) {
+            permanentAddressInput.value = presentAddressInput.value;
+            permanentAddressInput.disabled = true;
+        } else {
+            permanentAddressInput.value = "";
+            permanentAddressInput.disabled = false;
+        }
+    });
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Initialize chained dropdowns
+        $("#stateId").chained("#countryId");
+        $("#cityId").chained("#stateId");
+
+        // Load country data
+        $.ajax({
+            url: "URL_TO_COUNTRY_DATA",
+            dataType: "json",
+            success: function (data) {
+                var options = "<option value=''>Select Country</option>";
+                $.each(data, function (index, country) {
+                    options += "<option value='" + country.id + "'>" + country.name + "</option>";
+                });
+                $("#countryId").html(options);
+            }
+        });
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-chained/jquery.chained.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-chained/jquery.chained.remote.min.js"></script>
+
+{% endblock custom_cripts %}

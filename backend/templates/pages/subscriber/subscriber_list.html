@@ -38,16 +38,15 @@ active
 </span>
 
 <!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-1">
+<div class="d-sm-flex align-items-center justify-content-between mb-3">
     <section>
         <h4 class="mb-0"><strong>Subscriber</strong></h4>
-        <p>Add, edit, or delete a subscriber</p>
     </section>
-    <button class="btn btn-primary px-4" type="button">
+    <a class="btn btn-primary px-4" href="{%  url 'add_subscriber' %}">
         <i class="fa-sharp fa-solid fa-plus"></i>
         &nbsp;
         Add Subscriber
-    </button>
+    </a>
 </div>
 
 <!-- Page Content -->
@@ -111,7 +110,7 @@ active
 
                             {% else %}
                             <tr>
-                                <td colspan="6">No Record</td>
+                                <td colspan="7">No Record</td>
                             </tr>
                             {% endif %}
                         </tbody>
