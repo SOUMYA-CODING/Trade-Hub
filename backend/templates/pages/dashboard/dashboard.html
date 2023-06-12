@@ -13,90 +13,104 @@ active
 
 <!-- Content -->
 {% block content %}
-
-<!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h4 class="mb-0"><strong>Dashbaord</strong></h4>
-    <a href="#" class="btn btn-primary px-4">
-        <i class="fa-solid fa-download"></i>
-        &nbsp;
-        Create Report
-    </a>
-</div>
-
 <!-- Page Content -->
 <div class="row">
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Earnings (Monthly)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">Rs 0</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Subscribers -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Subscribers</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fa-solid fa-shop fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Products -->
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card border-left-info shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Products</div>
+                        <div class="text-xl font-weight-bold text-dark mb-1">
+                            Total Products</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
                     </div>
                     <div class="col-auto">
-                        <i class="fa-solid fa-bag-shopping fa-2x text-gray-300"></i>
+                        <i class="fa-solid fa-bag-shopping fa-3x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Customers -->
+    <!-- Users -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                            Customers</div>
+                        <div class="text-xl font-weight-bold text-dark mb-1">
+                            Total Users</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
                     </div>
                     <div class="col-auto">
-                        <i class="fa-solid fa-user fa-2x text-gray-300"></i>
+                        <i class="fa-solid fa-user fa-3x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Orders -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xl font-weight-bold text-dark mb-1">
+                            Total Orders</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fa-solid fa-shop fa-3x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xl font-weight-bold text-dark mb-1">
+                            Total Sells</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Rs 0</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-3x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
+<!-- Bar Chart -->
+<div class="row">
+    <div class="col">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-endcenter justify-content-end">
+                    <select name="month" class="form-control mr-3" style="width: 300px;" id="">
+                        <option value="">Select Month</option>
+                    </select>
+                    <a href="" class="btn btn-primary">Show</a>
+            </div>
+            <div class="card-body">
+                <div class="chart-bar">
+                    <canvas id="myBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
+
+<!-- Custom Scripts -->
+{% block custom_cripts %}
+<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+<script src="{% static 'js/demo/chart-bar-demo.js' %}"></script>
+{% endblock custom_cripts %}
